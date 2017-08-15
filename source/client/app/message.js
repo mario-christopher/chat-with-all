@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { trim } from '../funcs';
 import { messageDate } from '../funcs';
 
 export class Message extends React.Component {
@@ -9,8 +10,8 @@ export class Message extends React.Component {
         return (
             <div className='_row message'>
                 <div className='_col _spc-right message-info'>
-                    <span>{message.user.userName}</span>
-                    <span>{messageDate(message.time)}</span>
+                    <span>{trim(message.user.userName, 15)}</span>
+                    <small><span>{messageDate(message.time)}</span></small>
                 </div>
                 <div className='_stretch message-message'>{message.message}</div>
             </div>

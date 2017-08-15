@@ -18,12 +18,15 @@ export class User extends React.Component {
 
         return (
             <div className='_row'>
-                <span className='_spc user-name'>User Name :</span>
-                <input autoFocus ref={inp => { this.inp = inp; }} disabled={isConnected} className='_stretch _spc' />
+                <input autoFocus
+                    ref={inp => { this.inp = inp; }}
+                    disabled={isConnected} className='form-control _spc'
+                    placeholder='Enter your chat user name' 
+                    maxLength='50'/>
                 {!isConnected ?
-                    <button className='btn _spc' onClick={this.onJoinChatClicked} >Join Chat</button>
+                    <button className='btn _spc btn-success' onClick={this.onJoinChatClicked} >Join Chat</button>
                     :
-                    <button className='btn _spc' onClick={this.onLeaveChatClicked} >Leave Chat</button>
+                    <button className='btn _spc btn-warning' onClick={this.onLeaveChatClicked} >Leave Chat</button>
                 }
             </div>
         );

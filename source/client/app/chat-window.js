@@ -15,6 +15,11 @@ export class ChatWindow extends React.Component {
         }
     }
 
+    onKeyPress = (e) => {
+        if (e.charCode == 13)
+            this.sendMessageClicked();
+    }
+
     componentDidUpdate = () => {
         //Scoll the message list always to bottom.
         this.div.scrollTop = this.div.scrollHeight;
@@ -24,22 +29,28 @@ export class ChatWindow extends React.Component {
         let items = this.props.items;
 
         return (
-            <div className='_col message-window'>
-                <div className='_stretch message-list'
+            <div className='_col _stretch'>
+                <div className='_stretch scroll-div'
                     ref={div => { this.div = div; }}>
-                    {items &&
-                        items.map((item, i) => {
-                            if (item.type == ItemType.MESSAGE)
-                                return <Message key={i} message={item.content} />
+                    <ul className="list-group">
+                        {items &&
+                            items.map((item, i) => {
+                                if (item.type == ItemType.MESSAGE)
+                                    return <li key={i}
+                                        className="list-group-item less-pad">
+                                        <Message message={item.content} /></li>
 
-                            if (item.type == ItemType.NOTIFICATION)
-                                return <Notification key={i} notification={item.content} />
-                        })
-                    }
+                                if (item.type == ItemType.NOTIFICATION)
+                                    return <li key={i}
+                                        className="list-group-item list-group-item-warning less-pad">
+                                        <Notification key={i} notification={item.content} /></li>
+                            })
+                        }
+                    </ul>
                 </div>
                 <div className='_row new-message'>
-                    <input autoFocus ref={inp => { this.inp = inp; }} className='_stretch _spc' />
-                    <button className='btn _spc' onClick={this.sendMessageClicked}>Send</button>
+                    <input autoFocus ref={inp => { this.inp = inp; }} className='_stretch _spc' maxLength='100' onKeyPress={this.onKeyPress} />
+                    <button className='btn _spc btn-info' onClick={this.sendMessageClicked}>Send</button>
                 </div>
             </div>
         );

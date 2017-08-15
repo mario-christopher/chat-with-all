@@ -27,19 +27,25 @@ export class App extends React.PureComponent {
         let userInfo = this.props.userInfo;
 
         return (
-            <div className='_col'>
+            <div>
+                <header className='header-bg text-center'>
+                    <span className='header-title _stretch'>Chat with ALL ! </span>
+                </header>
                 <User
                     joinChat={this.onJoinChat}
                     leaveChat={this.onLeaveChat}
                     connected={userInfo.connected} />
-                {userInfo.connected &&
-                    <OtherUsers others={this.props.others} />
-                }
-                {userInfo.connected &&
-                    <ChatWindow
-                        sendMessage={this.onSendMessage}
-                        items={this.props.items} />
-                }
+                <div className='_row message-window'>
+                    {userInfo.connected &&
+                        <ChatWindow
+                            sendMessage={this.onSendMessage}
+                            items={this.props.items} />
+                    }
+                    {userInfo.connected &&
+                        <OtherUsers others={this.props.others} />
+                    }
+
+                </div>
             </div>
         );
     };
