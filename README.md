@@ -2,6 +2,7 @@
 A Simple chat application built using ReactJS, Node and Express. 
 Redux is used for Client State Management. 
 Redis is used for Server side session management.
+Socket.io is used for realtime chat messaging.
 
 ## Try it out:
 https://chat-with-all.herokuapp.com/
