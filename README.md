@@ -10,7 +10,7 @@ https://chat-with-all.herokuapp.com/
 1.    Open new terminal.
 2.    `git clone https://gitlab.com/mario-christopher/chat-with-all.git`.
 3.    The source code will be cloned in your local folder `chat-with-all`.
-4.    `chat-with-all`
+4.    `cd chat-with-all`
 5.    `npm install`   _(to install npm dependencies)_
 6.   `npm run server`    _(to start the Node server serving the API)_
 7.   You should see `Running server at port 3000` as a confirmation that the server started and connected to mongoDb.
