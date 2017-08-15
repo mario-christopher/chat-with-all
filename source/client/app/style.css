@@ -1,0 +1,61 @@
+body {
+        font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+._row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+._col {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+._stretch {
+    flex: 1;
+}
+
+._spc{
+    margin: 3px;
+}
+
+._spc-right{
+    margin-right: 10px;
+}
+
+
+#root {
+    border: 1px solid lightgray;
+    border-radius: 5px;
+}
+
+.user-name {
+    margin-top: 7px;
+}
+
+.message-window {
+    height: 300px;
+    border: 1px solid blue;
+    border-radius: 3px;
+}
+
+.message-list {
+    overflow: auto;
+}
+
+.message {
+    border: 1px solid lightblue;
+    border-radius: 5px;
+}
+
+.message-info {
+    border-right: 2px solid black;
+    padding: 5px;
+}
+
+.others-label {
+    
+}

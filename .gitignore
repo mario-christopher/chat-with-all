@@ -1,0 +1,6 @@
+/node_modules/
+public/build
+npm-debug.log
+.vscode
+.npmrc
+.env
