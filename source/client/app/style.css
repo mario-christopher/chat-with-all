@@ -69,6 +69,12 @@ body {
     width: 200px;
     border-left: 1px solid lightgrey;
 }
+
+.current-user{
+    font-weight: bold;
+    color: blue;
+}
+
 /*--- Bootstrap overrides -----------------------------------------*/
 
 .panel-footer{

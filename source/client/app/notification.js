@@ -1,12 +1,14 @@
 import React from 'react';
 
+import { messageDate } from '../funcs';
+
 export class Notification extends React.Component {
 
     render = () => {
-        let notification = this.props.notification;
+        let message = this.props.message;
 
         return (
-            <div>{notification}</div>
+            <div>{message.message} : <small>{messageDate(message.time)}</small></div>
         );
     }
 }

@@ -10,10 +10,10 @@ export class Message extends React.Component {
         return (
             <div className='_row message'>
                 <div className='_col _spc-right message-info'>
-                    <span>{trim(message.user.userName, 15)}</span>
+                    <span>{trim(message.userName, 15)}</span>
                     <small><span>{messageDate(message.time)}</span></small>
                 </div>
-                <div className='_stretch message-message'>{message.text}</div>
+                <div className='_stretch message-message'>{message.message}</div>
             </div>
         );
     };

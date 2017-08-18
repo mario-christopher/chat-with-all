@@ -13,22 +13,23 @@ export class App extends React.PureComponent {
 
     componentDidMount = () => {
         this.socketHandler = new SocketHandler(this.props.dispatch);
-        this.props.dispatch(asyncAction(ChatActions.JOINED, '/hasjoined', null, Method.GET))
+        this.props.dispatch(asyncAction(ChatActions.JOINED, 'hasjoined', null, Method.GET))
             .then(resultData => {
-                if (resultData.joined)
-                    this.socketHandler.connect();
+                if (resultData)
+                    this.connected();
             })
     }
 
     onJoinChat = (userName) => {
-        this.props.dispatch(asyncAction(ChatActions.JOINED, '/join', { userName }, Method.POST))
+        this.props.dispatch(asyncAction(ChatActions.JOINED, 'join', { userName }, Method.POST))
             .then(() => {
-                this.socketHandler.connect();
+                this.connected();
+                this.socketHandler.joined();
             });
     };
 
     onLeaveChat = () => {
-        this.props.dispatch(asyncAction(ChatActions.LEFT, '/leave', null, Method.POST))
+        this.props.dispatch(asyncAction(ChatActions.LEFT, 'leave', null, Method.POST))
             .then(() => {
                 this.socketHandler.disconnect();
             });
@@ -36,6 +37,12 @@ export class App extends React.PureComponent {
 
     onSendMessage = (message) => {
         this.socketHandler.sendMessage(message);
+    }
+
+    connected = () => {
+        this.socketHandler.connect();
+        this.props.dispatch(asyncAction(ChatActions.OTHERS, 'users', null, Method.GET));
+        this.props.dispatch(asyncAction(ChatActions.ADD_MESSAGES, 'messages', null, Method.GET))
     }
 
     render() {
@@ -46,20 +53,21 @@ export class App extends React.PureComponent {
                 <header className='header-bg text-center'>
                     <span className='header-title _stretch'>Chat with ALL ! </span>
                 </header>
-                
+
                 <User
                     user={user}
                     joinChat={this.onJoinChat}
                     leaveChat={this.onLeaveChat} />
 
                 <div className='_row message-window'>
-                    {user.joined &&
+                    {user &&
                         <ChatWindow
                             sendMessage={this.onSendMessage}
-                            items={this.props.items} />
+                            messages={this.props.messages} />
                     }
-                    {user.joined &&
-                        <OtherUsers others={this.props.others} />
+                    {user &&
+                        <OtherUsers others={this.props.others}
+                            user={user} />
                     }
 
                 </div>
@@ -72,7 +80,7 @@ const mapStateToProps = (state) => {
     return {
         user: state.messages.user,
         others: state.messages.others,
-        items: state.messages.items
+        messages: state.messages.messages
     };
 }
 App = connect(mapStateToProps)(App);

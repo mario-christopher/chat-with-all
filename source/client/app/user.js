@@ -38,13 +38,13 @@ export class User extends React.Component {
             <div className='_row'>
                 <input autoFocus
                     ref={inp => { this.inp = inp; }}
-                    disabled={user.joined} className='form-control _spc'
+                    disabled={user ? true : false} className='form-control _spc'
                     placeholder='Enter your chat user name'
                     maxLength='50'
                     value={this.state.value}
                     onChange={this.handleChange} 
                     onKeyPress={this.onKeyPress}/>
-                {!user.joined ?
+                {!user ?
                     <button className='btn _spc btn-success' onClick={this.onJoinChatClicked} >Join Chat</button>
                     :
                     <button className='btn _spc btn-warning' onClick={this.onLeaveChatClicked} >Leave Chat</button>

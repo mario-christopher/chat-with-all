@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const ChatActions = {
     ADD_MESSAGE: 'Add Message.',
-    ADD_NOTIFICATION: 'Add Notification.',
+    ADD_MESSAGES: 'Add Messages.',
     CLEAR_MESSAGES: 'Clear all messages.',
     OTHERS: 'Other users.',
 

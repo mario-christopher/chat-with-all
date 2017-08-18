@@ -26,24 +26,24 @@ export class ChatWindow extends React.Component {
     }
 
     render = () => {
-        let items = this.props.items;
+        let messages = this.props.messages;
 
         return (
             <div className='_col _stretch'>
                 <div className='_stretch scroll-div'
                     ref={div => { this.div = div; }}>
                     <ul className="list-group">
-                        {items &&
-                            items.map((item, i) => {
-                                if (item.type == ItemType.MESSAGE)
-                                    return <li key={i}
+                        {messages &&
+                            messages.map((message) => {
+                                if (message.type == ItemType.MESSAGE)
+                                    return <li key={message.id}
                                         className="list-group-item less-pad">
-                                        <Message message={item.content} /></li>
+                                        <Message message={message} /></li>
 
-                                if (item.type == ItemType.NOTIFICATION)
-                                    return <li key={i}
+                                if (message.type == ItemType.NOTIFICATION)
+                                    return <li key={message.id}
                                         className="list-group-item list-group-item-warning less-pad">
-                                        <Notification key={i} notification={item.content} /></li>
+                                        <Notification message={message} /></li>
                             })
                         }
                     </ul>

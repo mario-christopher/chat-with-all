@@ -5,7 +5,7 @@ import favicon from 'serve-favicon';
 import expressSession from 'express-session';
 
 import { setupChat } from './chat-room';
-import { router as authenticateApi } from './authenticate';
+import { router as api } from './api';
 import { redisSessionStore } from './redis-config';
 
 let PORT = process.env.PORT || 3000;
@@ -27,7 +27,7 @@ app.use(express.static(staticPath));
 app.use(express.static(staticPathBuild));
 app.use(favicon(path.resolve(staticPathPublic, 'favicon.png')));
 
-app.use('/api', authenticateApi);
+app.use('/api', api);
 
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(staticPathBuild, 'index.html'));

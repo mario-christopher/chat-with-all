@@ -1,9 +1,7 @@
 import socketIoExpressSession from 'socket.io-express-session';
 
-const chatSession = {
-    users: {},
-    messages: []
-}
+import { addMessage } from './chat-data';
+import { ItemType } from '../client/store/action';
 
 export const setupChat = (io, session) => {
 
@@ -11,50 +9,45 @@ export const setupChat = (io, session) => {
 
     io.on('connection', socket => {
 
-        if (socket.handshake.session && socket.handshake.session.user){
-            let userName = socket.handshake.session.user.name;
+        if (socket.handshake.session && socket.handshake.session.user) {
+            let userName = socket.handshake.session.user.userName;
 
-            chatSession.users[socket.id] = {
-                userName,
-                active: true
-            };
-            socket.broadcast.emit('joined', { message: `${userName} just joined the chat.` });
-            io.emit('others', { others: userList(chatSession.users) });
+            socket.on('joined', () => {
+                let message = `${userName} just joined the chat.`;
+                addMessage(message, userName, ItemType.NOTIFICATION)
+                    .then(message => {
+                        socket.broadcast.emit('message', { message });
+                    })
+                    .catch(err => {
+                        console.error('On Joined :', err);
+                    })
+            })
 
-            socket.on('disconnect', () => {
-                let user = chatSession.users[socket.id];
-                user.active = false;
-                socket.broadcast.emit('left', { message: `${user.userName} just left the chat.` });
-                io.emit('others', { others: userList(chatSession.users) });
-            });
+            socket.on('leaving', () => {
+                let message = `${userName} just left the chat.`;
+                addMessage(message, userName, ItemType.NOTIFICATION)
+                    .then(message => {
+                        socket.broadcast.emit('message', { message });
+                    })
+                    .catch(err => {
+                        console.error('On Leaving :', err);
+                    })
+            })
 
-            socket.on('message', text => {
-                let message = {
-                    user: chatSession.users[socket.id],
-                    text,
-                    time: new Date()
-                };
-                chatSession.messages.push(message);
-                io.emit('message', { message });
-            });
+            socket.on('message', message => {
+                addMessage(message, userName, ItemType.MESSAGE)
+                    .then(message => {
+                        io.emit('message', { message });
+                    });
+            })
+
+            socket.on('disconnect', (reason) => {
+                console.warn('On Disconnect :', reason);
+            })
         }
-        else{
+        else {
             console.log('Unauthorized socket access. Closing socket.');
             socket.disconnect(true);
         }
-            
     });
-}
-
-const userList = (users) => {
-    console.log('Users : ', users)
-    let userList = [];
-    Object.keys(users).forEach(key => {
-        if (users[key].active)
-            userList.push({
-                socketId: key,
-                userName: users[key].userName
-            })
-    })
-    return userList;
 }

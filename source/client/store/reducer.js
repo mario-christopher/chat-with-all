@@ -1,14 +1,10 @@
 import { ChatActions, ItemType } from './action';
 
 const initState = {
-    user: {
-        name: null,
-        joined: false,
-        time: null
-    },
-    error: null,
+    user: null,
     others: [],
-    items: []
+    messages: [],
+    error: null
 }
 
 export const messageReducer = (state = initState, action) => {
@@ -21,27 +17,33 @@ export const messageReducer = (state = initState, action) => {
             }
 
         case (ChatActions.JOINED):
+            {
+                let user = state.user;
+                if (action.data)
+                    user = { name: action.data.userName, time: action.data.time };
+                return { ...state, user }
+            }
+
         case (ChatActions.LEFT):
             {
-                let user = { name: action.data.name, joined: action.data.joined, time: action.data.time };
-                return { ...state, user }
+                return { ...state, user: null }
             }
 
         case (ChatActions.ADD_MESSAGE):
             {
-                let items = [...state.items, { type: ItemType.MESSAGE, content: action.data }];
-                return { ...state, items }
+                let messages = [...state.messages, action.data];
+                return { ...state, messages }
             }
 
-        case (ChatActions.ADD_NOTIFICATION):
+        case (ChatActions.ADD_MESSAGES):
             {
-                let items = [...state.items, { type: ItemType.NOTIFICATION, content: action.data }];
-                return { ...state, items }
+                let messages = [...action.data];
+                return { ...state, messages }
             }
 
         case (ChatActions.CLEAR_MESSAGES):
             {
-                return { ...state, items: [] }
+                return { ...state, messages: [] }
             }
 
         case (ChatActions.OTHERS):

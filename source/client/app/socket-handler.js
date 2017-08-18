@@ -37,12 +37,11 @@ export class SocketHandler {
 
     setupEvents = () => {
         this.socket.on('message', this.onMessage);
-        this.socket.on('left', this.onLeft);
-        this.socket.on('joined', this.onJoined);
         this.socket.on('others', this.onOthers);
     }
 
     disconnect = () => {
+        this.socket.emit('leaving');
         this.socket.close();
     }
 
@@ -50,16 +49,12 @@ export class SocketHandler {
         this.socket.send(message);
     }
 
+    joined = () => {
+        this.socket.emit('joined');
+    }
+
     onMessage = (data) => {
         this.dispatch(actionCreator(ChatActions.ADD_MESSAGE, data.message));
-    }
-
-    onLeft = (data) => {
-        this.dispatch(actionCreator(ChatActions.ADD_NOTIFICATION, data.message));
-    }
-
-    onJoined = (data) => {
-        this.dispatch(actionCreator(ChatActions.ADD_NOTIFICATION, data.message));
     }
 
     onOthers = (data) => {
