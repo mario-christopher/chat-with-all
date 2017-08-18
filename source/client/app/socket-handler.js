@@ -1,45 +1,36 @@
 import io from 'socket.io-client';
-import { ChatActions, action_AddMessage, action_AddNotification, action_Connection, action_ClearMessages, action_Others } from '../store/action';
+import { ChatActions, actionCreator } from '../store/action';
 
 export class SocketHandler {
 
     socket = null;
     dispatch = null;
-    userName = null;
     roomName = null;
     messages = [];
 
-    constructor(userName, roomName, dispatch) {
-        this.userName = userName;
-        this.roomName = roomName;
+    constructor(dispatch) {
         this.dispatch = dispatch;
     }
 
     connect = () => {
-        this.socket = io({
-            query: {
-                userName: this.userName
-            }
-        });
+        this.socket = io.connect();
 
         this.socket.on('connect', () => {
-            this.dispatch(action_Connection(ChatActions.CONNECTION, this.socket.id, true));
             this.setupEvents();
         });
 
         this.socket.on('connect_error', (err) => {
-            this.dispatch(action_Connection(ChatActions.CONNECTION, this.socket.id, false, 'There was an error connecting to the chat.'));
+            this.dispatch(action_Connection(ChatActions.ERR, null, false, 'There was an error connecting to the chat.'));
             console.error('Connect Error :', err);
         });
 
         this.socket.on('connect_timeout', (timeout) => {
-            this.dispatch(action_Connection(ChatActions.CONNECTION, this.socket.id, false, 'The connection to the chat timedout.'));
+            this.dispatch(action_Connection(ChatActions.ERR, null, false, 'The connection to the chat timed out.'));
             console.error('Connection Timeout :', timeout);
         });
 
         this.socket.on('disconnect', (reason) => {
-            this.dispatch(action_Connection(ChatActions.CONNECTION, this.socket.id, false, reason));
-            this.dispatch(action_ClearMessages(ChatActions.CLEAR_MESSAGES));
+            console.log('Disconnected from chat.');
         });
     }
 
@@ -59,18 +50,18 @@ export class SocketHandler {
     }
 
     onMessage = (data) => {
-        this.dispatch(action_AddMessage(ChatActions.ADD_MESSAGE, data.message));
+        this.dispatch(actionCreator(ChatActions.ADD_MESSAGE, data.message));
     }
 
     onLeft = (data) => {
-        this.dispatch(action_AddNotification(ChatActions.ADD_NOTIFICATION, data.message));
+        this.dispatch(actionCreator(ChatActions.ADD_NOTIFICATION, data.message));
     }
 
     onJoined = (data) => {
-        this.dispatch(action_AddNotification(ChatActions.ADD_NOTIFICATION, data.message));
+        this.dispatch(actionCreator(ChatActions.ADD_NOTIFICATION, data.message));
     }
 
     onOthers = (data) => {
-        this.dispatch(action_Others(ChatActions.OTHERS, data.others));
+        this.dispatch(actionCreator(ChatActions.OTHERS, data.others));
     }
 }

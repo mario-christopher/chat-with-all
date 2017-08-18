@@ -1,9 +1,14 @@
+import axios from 'axios';
+
 export const ChatActions = {
-    CONNECTION: 'User Connection.',
     ADD_MESSAGE: 'Add Message.',
     ADD_NOTIFICATION: 'Add Notification.',
     CLEAR_MESSAGES: 'Clear all messages.',
     OTHERS: 'Other users.',
+
+    JOINED: 'Joined Chat.',
+    LEFT: 'Left Chat.',
+    ERR: 'Error Occured.'
 }
 
 export const ItemType = {
@@ -11,32 +16,43 @@ export const ItemType = {
     NOTIFICATION: 'Notification'
 }
 
-export const action_Connection = (type, socketId, connection, reason) => {
+export const Method = {
+    GET: 'get',
+    POST: 'post'
+}
+
+export const actionCreator = (type, data, err) => {
     return {
-        type, socketId, connection, reason
+        type, data, err
     };
 }
 
-export const action_AddMessage = (type, message) => {
-    return {
-        type, message
-    };
+export const asyncAction = (type, url, data, method) => {
+
+    let _url = `api/${url}`;
+
+    return (dispatch, state) => {
+        return makeAsyncCall(_url, data, method)
+            .then(resultData => {
+                dispatch(actionCreator(type, resultData, null));
+                return resultData;
+            })
+            .catch(err => {
+                dispatch(actionCreator(ChatActions.ERR, null, err));
+                console.error('Async call error : ', err);
+            })
+    }
 }
 
-export const action_AddNotification = (type, notification) => {
-    return {
-        type, notification
-    };
-}
+const makeAsyncCall = (url, data, method) => {
 
-export const action_ClearMessages = (type) => {
-    return {
-        type
-    };
-}
-
-export const action_Others = (type, others) => {
-    return {
-        type, others
-    };
+    return axios({
+        url, data, method,
+    })
+        .then(result => {
+            return result.data;
+        })
+        .catch(err => {
+            throw err;
+        })
 }

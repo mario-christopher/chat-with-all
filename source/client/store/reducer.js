@@ -1,12 +1,13 @@
 import { ChatActions, ItemType } from './action';
 
 const initState = {
-    others: [],
-    userInfo: {
-        socketId: null,
-        connected: false,
-        reason: null
+    user: {
+        name: null,
+        joined: false,
+        time: null
     },
+    error: null,
+    others: [],
     items: []
 }
 
@@ -14,21 +15,27 @@ export const messageReducer = (state = initState, action) => {
 
     switch (action.type) {
 
-        case (ChatActions.CONNECTION):
+        case (ChatActions.ERR):
             {
-                let userInfo = { socketId: action.socketId, connected: action.connection, reason: action.reason };
-                return { ...state, userInfo }
+                return { ...state, error: action.err };
+            }
+
+        case (ChatActions.JOINED):
+        case (ChatActions.LEFT):
+            {
+                let user = { name: action.data.name, joined: action.data.joined, time: action.data.time };
+                return { ...state, user }
             }
 
         case (ChatActions.ADD_MESSAGE):
             {
-                let items = [...state.items, { type: ItemType.MESSAGE, content: action.message }];
+                let items = [...state.items, { type: ItemType.MESSAGE, content: action.data }];
                 return { ...state, items }
             }
 
         case (ChatActions.ADD_NOTIFICATION):
             {
-                let items = [...state.items, { type: ItemType.NOTIFICATION, content: action.notification }];
+                let items = [...state.items, { type: ItemType.NOTIFICATION, content: action.data }];
                 return { ...state, items }
             }
 
@@ -39,9 +46,9 @@ export const messageReducer = (state = initState, action) => {
 
         case (ChatActions.OTHERS):
             {
-                return { ...state, others: action.others }
+                return { ...state, others: action.data }
             }
-            
+
         default:
             return state;
     }

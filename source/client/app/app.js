@@ -5,18 +5,33 @@ import { User } from './user';
 import { OtherUsers } from './other-users';
 import { ChatWindow } from './chat-window';
 import { SocketHandler } from './socket-handler';
+import { asyncAction, Method, ChatActions } from '../store/action';
 
 export class App extends React.PureComponent {
 
     socketHandler = null;
 
+    componentDidMount = () => {
+        this.socketHandler = new SocketHandler(this.props.dispatch);
+        this.props.dispatch(asyncAction(ChatActions.JOINED, '/hasjoined', null, Method.GET))
+            .then(resultData => {
+                if (resultData.joined)
+                    this.socketHandler.connect();
+            })
+    }
+
     onJoinChat = (userName) => {
-        this.socketHandler = new SocketHandler(userName, 'room1', this.props.dispatch);
-        this.socketHandler.connect();
+        this.props.dispatch(asyncAction(ChatActions.JOINED, '/join', { userName }, Method.POST))
+            .then(() => {
+                this.socketHandler.connect();
+            });
     };
 
     onLeaveChat = () => {
-        this.socketHandler.disconnect();
+        this.props.dispatch(asyncAction(ChatActions.LEFT, '/leave', null, Method.POST))
+            .then(() => {
+                this.socketHandler.disconnect();
+            });
     }
 
     onSendMessage = (message) => {
@@ -24,24 +39,26 @@ export class App extends React.PureComponent {
     }
 
     render() {
-        let userInfo = this.props.userInfo;
+        let user = this.props.user;
 
         return (
             <div>
                 <header className='header-bg text-center'>
                     <span className='header-title _stretch'>Chat with ALL ! </span>
                 </header>
+                
                 <User
+                    user={user}
                     joinChat={this.onJoinChat}
-                    leaveChat={this.onLeaveChat}
-                    connected={userInfo.connected} />
+                    leaveChat={this.onLeaveChat} />
+
                 <div className='_row message-window'>
-                    {userInfo.connected &&
+                    {user.joined &&
                         <ChatWindow
                             sendMessage={this.onSendMessage}
                             items={this.props.items} />
                     }
-                    {userInfo.connected &&
+                    {user.joined &&
                         <OtherUsers others={this.props.others} />
                     }
 
@@ -53,8 +70,8 @@ export class App extends React.PureComponent {
 
 const mapStateToProps = (state) => {
     return {
+        user: state.messages.user,
         others: state.messages.others,
-        userInfo: state.messages.userInfo,
         items: state.messages.items
     };
 }

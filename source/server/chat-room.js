@@ -1,17 +1,23 @@
+import socketIoExpressSession from 'socket.io-express-session';
+
 const chatSession = {
     users: {},
     messages: []
 }
 
-export const setupChat = (io) => {
+export const setupChat = (io, session) => {
+
+    io.use(socketIoExpressSession(session));
 
     io.on('connection', socket => {
 
+        let userName = socket.handshake.session.user.name;
+
         chatSession.users[socket.id] = {
-            userName: socket.handshake.query.userName,
+            userName,
             active: true
         };
-        socket.broadcast.emit('joined', { message: `${socket.handshake.query.userName} just joined the chat.` });
+        socket.broadcast.emit('joined', { message: `${userName} just joined the chat.` });
         io.emit('others', { others: userList(chatSession.users) });
 
         socket.on('disconnect', () => {
@@ -21,15 +27,14 @@ export const setupChat = (io) => {
             io.emit('others', { others: userList(chatSession.users) });
         });
 
-        socket.on('message', msg => {
-            let newMessage = {
-                socketId: socket.id,
-                time: new Date(),
-                message: msg,
-                user: chatSession.users[socket.id]
+        socket.on('message', text => {
+            let message = {
+                user: chatSession.users[socket.id],
+                text,
+                time: new Date()
             };
-            chatSession.messages.push(newMessage);
-            io.emit('message', { message: newMessage });
+            chatSession.messages.push(message);
+            io.emit('message', { message });
         });
     });
 }
