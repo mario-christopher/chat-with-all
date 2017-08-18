@@ -30,6 +30,7 @@ export class SocketHandler {
         });
 
         this.socket.on('disconnect', (reason) => {
+            this.dispatch(actionCreator(ChatActions.CLEAR_MESSAGES));
             console.log('Disconnected from chat.');
         });
     }
@@ -55,7 +56,6 @@ export class SocketHandler {
 
     onLeft = (data) => {
         this.dispatch(actionCreator(ChatActions.ADD_NOTIFICATION, data.message));
-        this.dispatch(actionCreator(ChatActions.CLEAR_MESSAGES));
     }
 
     onJoined = (data) => {

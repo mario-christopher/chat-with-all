@@ -26,6 +26,11 @@ export class User extends React.Component {
         this.props.leaveChat();
     }
 
+    onKeyPress = (e) => {
+        if (e.charCode == 13)
+            this.onJoinChatClicked();
+    }
+
     render = () => {
         let user = this.props.user;
 
@@ -37,7 +42,8 @@ export class User extends React.Component {
                     placeholder='Enter your chat user name'
                     maxLength='50'
                     value={this.state.value}
-                    onChange={this.handleChange} />
+                    onChange={this.handleChange} 
+                    onKeyPress={this.onKeyPress}/>
                 {!user.joined ?
                     <button className='btn _spc btn-success' onClick={this.onJoinChatClicked} >Join Chat</button>
                     :
