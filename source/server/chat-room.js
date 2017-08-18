@@ -11,31 +11,35 @@ export const setupChat = (io, session) => {
 
     io.on('connection', socket => {
 
-        let userName = socket.handshake.session.user.name;
+        if (socket.handshake.session && socket.handshake.session.user){
+            let userName = socket.handshake.session.user.name;
 
-        chatSession.users[socket.id] = {
-            userName,
-            active: true
-        };
-        socket.broadcast.emit('joined', { message: `${userName} just joined the chat.` });
-        io.emit('others', { others: userList(chatSession.users) });
-
-        socket.on('disconnect', () => {
-            let user = chatSession.users[socket.id];
-            user.active = false;
-            socket.broadcast.emit('left', { message: `${user.userName} just left the chat.` });
-            io.emit('others', { others: userList(chatSession.users) });
-        });
-
-        socket.on('message', text => {
-            let message = {
-                user: chatSession.users[socket.id],
-                text,
-                time: new Date()
+            chatSession.users[socket.id] = {
+                userName,
+                active: true
             };
-            chatSession.messages.push(message);
-            io.emit('message', { message });
-        });
+            socket.broadcast.emit('joined', { message: `${userName} just joined the chat.` });
+            io.emit('others', { others: userList(chatSession.users) });
+
+            socket.on('disconnect', () => {
+                let user = chatSession.users[socket.id];
+                user.active = false;
+                socket.broadcast.emit('left', { message: `${user.userName} just left the chat.` });
+                io.emit('others', { others: userList(chatSession.users) });
+            });
+
+            socket.on('message', text => {
+                let message = {
+                    user: chatSession.users[socket.id],
+                    text,
+                    time: new Date()
+                };
+                chatSession.messages.push(message);
+                io.emit('message', { message });
+            });
+        }
+        else
+            socket.close();
     });
 }
 
