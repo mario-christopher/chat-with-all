@@ -6,6 +6,7 @@ import expressSession from 'express-session';
 
 import { setupChat } from './chat-room';
 import { router as authenticateApi } from './authenticate';
+import { redisSessionStore } from './redis-config';
 
 let PORT = process.env.PORT || 3000;
 let staticPath = path.resolve(__dirname, '../../');
@@ -14,6 +15,7 @@ let staticPathBuild = path.resolve(__dirname, '../../public/build');
 
 let app = express();
 let session = expressSession({
+    store: redisSessionStore,
     secret: "top-most-secret-encrypting-key",
     resave: false,
     saveUninitialized: false

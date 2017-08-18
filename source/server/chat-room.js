@@ -38,8 +38,11 @@ export const setupChat = (io, session) => {
                 io.emit('message', { message });
             });
         }
-        else
-            socket.close();
+        else{
+            console.log('Unauthorized socket access. Closing socket.');
+            socket.disconnect(true);
+        }
+            
     });
 }
 
