@@ -55,6 +55,7 @@ export class SocketHandler {
 
     onLeft = (data) => {
         this.dispatch(actionCreator(ChatActions.ADD_NOTIFICATION, data.message));
+        this.dispatch(actionCreator(ChatActions.CLEAR_MESSAGES));
     }
 
     onJoined = (data) => {
