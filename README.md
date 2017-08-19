@@ -6,6 +6,7 @@
 * Express - *as the web framework, and for RESTApi.*
 * Redis - *used for server side session management, data storage and pub-sub for messages.*
 * Socket.io - *used for realtime messaging.*
+* Live app hosted on [Heroku](https://www.heroku.com/) and [RedisLabs](https://redislabs.com/).
 
 ## Try it out:
 https://chat-with-all.herokuapp.com/
