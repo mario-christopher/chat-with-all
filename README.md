@@ -1,32 +1,41 @@
 # Chat with ALL
-A Simple chat application built using ReactJS, Node and Express. 
-Redux is used for Client State Management. 
-Redis is used for Server side session management.
-Socket.io is used for realtime chat messaging.
+**Chat with ALL** is a simple chat application built using :
+* React - *to create the front end.*
+* Redux - *used for client side state management.*
+* Node - *to handle the server stuff.*
+* Express - *as the web framework.*
+* Redis - *used for server side session management, data storage and pub-sub for messages.*
+* Socket.io - *used for realtime messaging.*
 
 ## Try it out:
 https://chat-with-all.herokuapp.com/
 
+---
+
 ## Setup
-1.    Open new terminal.
-2.    `git clone https://gitlab.com/mario-christopher/chat-with-all.git`.
-3.    The source code will be cloned in your local folder `chat-with-all`.
-4.    `cd chat-with-all`
-5.    `npm install`   _(to install npm dependencies)_
-6.   `npm run server`    _(to start the Node server serving the API)_
-7.   You should see `Running server at port 3000` as a confirmation that the server started and connected to mongoDb.
-8.   Open a new terminal.
-9.   `npm run client`   _(to start the webclient)_
-10.   You should see `webpack: Compiled successfully` as a confirmation that the client code compiled without issues (it may take a few seconds).
-11.   Open a Google Chrome Browser window and browse to `http://localhost:3001/`
-12.   Note: The API is served from `http://localhost:3000/' and the web site runs from 'http://localhost:3001/' 
+* `git clone https://gitlab.com/mario-christopher/chat-with-all.git`
+* `cd chat-with-all`
+* `npm install`
+* Edit the file `source\server\redis\config.js` to add your redis server url (REDIS_URL) and password (REDIS_DB_PWD), or, alternatively, edit the `package.json` scripts to send them in as env variables. The app will not work without Redis configured.
+* `npm run server` - *runs server on port 3000.*
+* `npm run client` - *runs client on port 3001 (on another terminal).*
+* Browse to http://localhost:3001 *( tested on Chrome and IE.11 ).*
+
+*Note : To simulate multiple clients chatting on the same computer, open the client (http://localhost:3001) in different browsers ( eg.: Client1 on Chrome, Client2 on IE etc ).*
+
+---
 
 ##  Application features:
 
-1.  Use of nick-names for chat session.
-2.  Broadcast a message to connected users when someone connects or disconnects
-3.  Show who’s online.
+* User-name to identify the user in the chat session.
+* Broadcast a message to connected users when someone connects or disconnects.
+* After joing the chat, see who else is on the chat.
+* Rejoin the chat from where you left off automatically, if server crashes and/or restarts.
+* Rejoin the chat from where you left off automatically, if browser crashes and/or refreshes.
+* User is remembered (messages) until they explicitly leave the chat.
+* User sessions and app data are stored externally, on a Redis server, to allow for recoveries on crashes, multiple servers, load balancing, scaling etc.
+* Use of `socket.io-express-session` to share session with socket.io, so user information is safe in single source within session.
 
-###   License
+##   License
 
 Shared under MIT License.
