@@ -32,6 +32,7 @@ https://chat-with-all.herokuapp.com/
 * User is remembered (messages) until they explicitly leave the chat.
 * User sessions and app data are stored externally, on a Redis server, to allow for recoveries on crashes, multiple servers, load balancing, scaling etc.
 * Use of `socket.io-express-session` to share session with socket.io, so user information is safe in single source within session.
+* Use of ES6 features and Promises on Server and Client.
 
 ##   License
 
