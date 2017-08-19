@@ -6,7 +6,7 @@ import expressSession from 'express-session';
 
 import { setupChat } from './chat-room';
 import { router as api } from './api';
-import { redisSessionStore } from './redis-config';
+import { redisSessionStore } from './redis/config';
 
 let PORT = process.env.PORT || 3000;
 let staticPath = path.resolve(__dirname, '../../');

@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 import { logApi, notFound, isAuthorized } from './middleware';
-import { addUser, removeUser, getAllUsers, getUserMessages } from './chat-data';
+import { addUser, removeUser, getAllUsers, getUserMessages } from './redis/data';
 
 export const router = express.Router();
 

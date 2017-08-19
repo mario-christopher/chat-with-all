@@ -1,20 +1,20 @@
-import { redisClient } from './redis-config';
+import { redisClient } from './config';
 
 const Schema = {
-    DB: 'cwa',
-    USERS: 'users',
-    MSGS_TO_USER: 'msgs_to_user',
-    MSGS: 'messages',
-    IDS: 'ids',
-    LISTS: 'lists'
+    APP: 'cwa',
+    ID: 'id',
+    USER: 'user',
+    MESSAGE: 'message',
+    SET_OF: 'set_of',
+    MSG_TO_USER: 'msg_to_user'
 }
 
 export const addUser = (userName) => {
 
     return new Promise((resolve, reject) => {
 
-        let listOfUsersKey = getKeyListOfUsers();
-        redisClient.sadd(listOfUsersKey, userName, (err, reply) => {
+        let setOfUsersKey = getKeySetOfUsers();
+        redisClient.sadd(setOfUsersKey, userName, (err, reply) => {
             if (err)
                 reject(err);
             else
@@ -41,8 +41,8 @@ export const removeUser = (userName) => {
 
     return new Promise((resolve, reject) => {
 
-        let listOfUsersKey = getKeyListOfUsers();
-        redisClient.srem(listOfUsersKey, userName, (err, reply) => {
+        let setOfUsersKey = getKeySetOfUsers();
+        redisClient.srem(setOfUsersKey, userName, (err, reply) => {
             if (err)
                 reject(err);
             else
@@ -71,8 +71,8 @@ export const removeUser = (userName) => {
 export const getAllUsers = () => {
 
     return new Promise((resolve, reject) => {
-        let listOfUsersKey = getKeyListOfUsers();
-        redisClient.smembers(listOfUsersKey, (err, reply) => {
+        let setOfUsersKey = getKeySetOfUsers();
+        redisClient.smembers(setOfUsersKey, (err, reply) => {
             if (err)
                 reject(err);
             else
@@ -85,8 +85,8 @@ export const addMessage = (message, userName, type) => {
 
     return new Promise((resolve, reject) => {
 
-        let listOfUsersKey = getKeyListOfUsers();
-        redisClient.scard(listOfUsersKey, (err, count) => {
+        let setOfUsersKey = getKeySetOfUsers();
+        redisClient.scard(setOfUsersKey, (err, count) => {
             if (err)
                 reject(err);
             else {
@@ -136,8 +136,8 @@ export const addMessageToUsers = (messageId) => {
 export const addMessageToList = (messageId) => {
 
     return new Promise((resolve, reject) => {
-        let listOfMessagesKey = getKeyListOfMessages();
-        redisClient.sadd(listOfMessagesKey, messageId, (err, reply) => {
+        let setOfMessagesKey = getKeySetOfMessages();
+        redisClient.sadd(setOfMessagesKey, messageId, (err, reply) => {
             if (err)
                 reject(err);
             else
@@ -185,20 +185,20 @@ export const getUserMessages = (userName) => {
 export const removeAllMessages = () => {
 
     return new Promise((resolve, reject) => {
-        let listOfUsersKey = getKeyListOfUsers();
-        redisClient.scard(listOfUsersKey, (err, count) => {
+        let setOfUsersKey = getKeySetOfUsers();
+        redisClient.scard(setOfUsersKey, (err, count) => {
             if (err)
                 reject(err);
             else {
                 if (count == 0) {        //No more users, so delete all messages, and reset Msg ID = 0
-                    let listOfMessagesKey = getKeyListOfMessages();
-                    redisClient.smembers(listOfMessagesKey, (err, messageIds) => {
+                    let setOfMessagesKey = getKeySetOfMessages();
+                    redisClient.smembers(setOfMessagesKey, (err, messageIds) => {
                         if (err)
                             reject(err);
                         else {
                             let messageIdKeys = messageIds.map(id => getKeyMessages(id));
-                            let idMsgs = getKeyIds(Schema.MSGS);
-                            let allKeysToDel = [...messageIdKeys, listOfMessagesKey, idMsgs];
+                            let idMsgs = getKeyIds(Schema.MESSAGE);
+                            let allKeysToDel = [...messageIdKeys, setOfMessagesKey, idMsgs];
                             redisClient.del(allKeysToDel, (err, reply) => {
                             })
                         }
@@ -212,7 +212,7 @@ export const removeAllMessages = () => {
 export const newMsgId = () => {
 
     return new Promise((resolve, reject) => {
-        let idMsgs = getKeyIds(Schema.MSGS);
+        let idMsgs = getKeyIds(Schema.MESSAGE);
         redisClient.incr(idMsgs, (err, newId) => {
             if (err)
                 reject(err);
@@ -222,39 +222,26 @@ export const newMsgId = () => {
     });
 }
 
-export const resetMsgId = () => {
-
-    return new Promise((resolve, reject) => {
-        let idMsgs = getKeyIds(Schema.MSGS);
-        redisClient.set(idMsgs, 0, (err, newId) => {
-            if (err)
-                reject(err);
-            else
-                resolve(newId);
-        })
-    });
-}
-
 export const getKeyUsers = (userName) => {
-    return `${Schema.DB}:${Schema.USERS}:${userName}`;
+    return `${Schema.APP}:${Schema.USER}:${userName}`;
 }
 
 export const getKeyMessageToUser = (userName) => {
-    return `${Schema.DB}:${Schema.MSGS_TO_USER}:${userName}`;
+    return `${Schema.APP}:${Schema.MSG_TO_USER}:${userName}`;
 }
 
-export const getKeyListOfUsers = () => {
-    return `${Schema.DB}:${Schema.LISTS}:${Schema.USERS}`;
+export const getKeySetOfUsers = () => {
+    return `${Schema.APP}:${Schema.SET_OF}:${Schema.USER}`;
 }
 
-export const getKeyListOfMessages = () => {
-    return `${Schema.DB}:${Schema.LISTS}:${Schema.MSGS}`;
+export const getKeySetOfMessages = () => {
+    return `${Schema.APP}:${Schema.SET_OF}:${Schema.MESSAGE}`;
 }
 
 export const getKeyMessages = (messageId) => {
-    return `${Schema.DB}:${Schema.MSGS}:${messageId}`;
+    return `${Schema.APP}:${Schema.MESSAGE}:${messageId}`;
 }
 
 export const getKeyIds = (idType) => {
-    return `${Schema.DB}:${Schema.IDS}:${idType}`;
+    return `${Schema.APP}:${Schema.ID}:${idType}`;
 }

@@ -1,6 +1,6 @@
 import socketIoExpressSession from 'socket.io-express-session';
 
-import { addMessage } from './chat-data';
+import { addMessage } from './redis/data';
 import { ItemType } from '../client/store/action';
 
 export const setupChat = (io, session) => {
