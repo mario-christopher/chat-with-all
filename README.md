@@ -3,14 +3,12 @@
 * React - *to create the front end.*
 * Redux - *used for client side state management.*
 * Node - *to handle the server stuff.*
-* Express - *as the web framework.*
+* Express - *as the web framework, and for RESTApi.*
 * Redis - *used for server side session management, data storage and pub-sub for messages.*
 * Socket.io - *used for realtime messaging.*
 
 ## Try it out:
 https://chat-with-all.herokuapp.com/
-
----
 
 ## Setup
 * `git clone https://gitlab.com/mario-christopher/chat-with-all.git`
@@ -23,7 +21,6 @@ https://chat-with-all.herokuapp.com/
 
 *Note : To simulate multiple clients chatting on the same computer, open the client (http://localhost:3001) in different browsers ( eg.: Client1 on Chrome, Client2 on IE etc ).*
 
----
 
 ##  Application features:
 
